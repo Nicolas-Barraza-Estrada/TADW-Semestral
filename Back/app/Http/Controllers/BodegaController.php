@@ -16,4 +16,12 @@ class BodegaController extends Controller
 
         return response()->json($bodega, 201);
     }
+    //funcion para mostrar todas las bodegas
+    public function index()
+    {
+        // Obtener todos los artículos
+        $bodegas = Bodega::all();
+
+        return response()->json($bodegas);
+    }
 }

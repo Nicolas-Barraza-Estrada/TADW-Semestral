@@ -3,13 +3,16 @@
 // app/Http/Controllers/ArticuloController.php
 
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Log;
 use App\Models\Articulo;
 use App\Http\Requests\ArticuloRequest;
 use App\Events\ArticuloCreado;
 use Illuminate\Support\Facades\Event;
-
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Http\Response; // Agrega esta línea
 class ArticuloController extends Controller
+
 {
     public function index()
     {
@@ -35,19 +38,64 @@ class ArticuloController extends Controller
         return response()->json($articulo);
     }
 
-    public function update(ArticuloRequest $request, Articulo $articulo)
-    {
-        // Actualizar un artículo existente
-        $articulo->update($request->validated());
 
-        return response()->json($articulo);
+    //funcioin simple que modifica el nombre de un articulo recibiendo el id y el nuevo nombreArticulo
+    public function update(Request $request, $id)
+    {
+        try {
+            $articulo = Articulo::find($id);
+            $articulo->nombreArticulo = $request->nombreArticulo;
+            $articulo->save();
+
+            return response()->json(["articulo" => $articulo], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            Log::info([
+                "error" => $e->getMessage(),
+                "linea" => $e->getLine(),
+                "file" => $e->getFile(),
+                "metodo" => __METHOD__
+            ]);
+
+            return response()->json([
+                "error" => $e->getMessage(),
+                "linea" => $e->getLine(),
+                "file" => $e->getFile(),
+                "metodo" => __METHOD__
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
 
-    public function destroy(Articulo $articulo)
-    {
-        // Eliminar un artículo
-        $articulo->delete();
 
-        return response()->json(null, 204);
+    public function destroyByNombre(Request $request)
+    {
+        try {
+
+            $articulo = Articulo::where('nombreArticulo', $request->nombreArticulo)->first();
+
+            if (!$articulo) {
+                throw ValidationException::withMessages([
+                    'nombreArticulo' => ['No se encontró un artículo con ese nombre.'],
+                ]);
+            }
+
+            $articulo->delete();
+
+            return response()->json(["articulo" => $articulo], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            Log::info([
+                "error" => $e->getMessage(),
+                "linea" => $e->getLine(),
+                "file" => $e->getFile(),
+                "metodo" => __METHOD__
+            ]);
+
+            return response()->json([
+                "error" => $e->getMessage(),
+                "linea" => $e->getLine(),
+                "file" => $e->getFile(),
+                "metodo" => __METHOD__
+            ], Response::HTTP_BAD_REQUEST);
+        }
     }
+
 }
