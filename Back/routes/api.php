@@ -30,6 +30,8 @@ Route::delete('articulos/{nombreArticulo}', [ArticuloController::class, 'destroy
 // Rutas para Bodegas
 Route::post('bodegas', [BodegaController::class, 'store']); //ok
 Route::get('bodegas', [BodegaController::class, 'index']); //ok
+Route::put('bodegas/{id}/{  }', [BodegaController::class, 'update']);//ok
+Route::delete('bodegas/{id}', [BodegaController::class, 'destroy']);//ok
 
 Route::get('ArticulosEnBodega', [ArticuloEnBodegaController::class, 'index']);//ok
 Route::get('ArticulosEnBodega/{bodega_id}', [ArticuloEnBodegaController::class, 'show']);//ok

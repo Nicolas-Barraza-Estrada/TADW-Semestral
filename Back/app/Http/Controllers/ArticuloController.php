@@ -10,7 +10,7 @@ use App\Events\ArticuloCreado;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Http\Response; // Agrega esta línea
+use Illuminate\Http\Response; 
 class ArticuloController extends Controller
 
 {
@@ -39,7 +39,7 @@ class ArticuloController extends Controller
     }
 
 
-    //funcioin simple que modifica el nombre de un articulo recibiendo el id y el nuevo nombreArticulo
+    //funcioin simple que modifica el nombre de un articulo recibiendo el id y el nuevo nombreArticulo, verifica que el nombre no exista en la tabla
     public function update(Request $request, $id)
     {
         try {
